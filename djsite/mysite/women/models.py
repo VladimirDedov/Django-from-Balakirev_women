@@ -8,7 +8,7 @@ class Women(models.Model):
     photo = models.ImageField(upload_to='photos/%y/%m/%d', verbose_name='Фотография')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     time_update = models.DateTimeField(auto_now=True)
-    is_publisher = models.BooleanField(default=True, verbose_name='Опубликовано')
+    is_publisher =  models.BooleanField(default=True, verbose_name='Опубликовано')
     cat = models.ForeignKey('Category', on_delete=models.PROTECT,
                             null=True)  # Внешний ключ с классом(таблицей) Categoryp
 

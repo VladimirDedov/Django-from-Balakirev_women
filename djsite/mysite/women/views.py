@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
+
+from .forms import AddPostForm
 from .models import *
 
 menu = [
@@ -48,7 +50,7 @@ def show_category(request, cat_id):
                'menu': menu,
                'title': "Head Page",
                'cat_selected': cat_id}
-    if len(posts)==0:
+    if len(posts) == 0:
         raise Http404()
 
     return render(request, 'women/index.html',
@@ -59,8 +61,24 @@ def categories(request, cat):
     return HttpResponse(f'<h1>Topic for categories</h1><p>{cat}</p>')
 
 
-def addpage(requests):
-    return HttpResponse('AddPage')
+def addpage(request):
+    if request.method == 'POST':
+        form = AddPostForm(request.POST, request.FILES)
+        if form.is_valid():  # Данные прошли валидацию
+            form.save()  # Сохрание данных в базе данных
+            return redirect('home')
+    else:
+        form = AddPostForm()
+    cats = Category.objects.all()
+
+    context = {
+        'form': form,
+        'cats': cats,
+        'menu': menu,
+        'title': "Add Page"
+    }
+    return render(request, 'women/addpage.html',
+                  context=context)
 
 
 def contact(requests):
