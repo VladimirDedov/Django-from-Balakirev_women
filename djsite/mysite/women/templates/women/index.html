@@ -1,0 +1,27 @@
+{% extends 'women/base.html' %}
+
+{% block content %}
+<ul class="list-articles">
+    {% for p in posts %}
+
+
+    <li>
+        <div class="article-panel">
+            <p class="first">Категория: {{p.cat}}</p>
+            <p class="last">Дата обновления поста: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
+        </div>
+        {% if p.photo %}
+        <p><img class="img-article-left thumb" src="{{p.photo.url}}"></p><!-- Спец атрибут url для формирования адреса каталога. куда загружено-->
+        {% endif %}
+        <h2>{{p.title}}</h2>
+
+        {% autoescape on %}<!--Экранирование тэгов  -->
+        {{p.content|linebreaks|truncatewords:50}}
+        {% endautoescape %}
+        <div class="clear"></div>
+        <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p>
+        <!--p - ссылка на класс Women. Так делать кога маршрут формируется из БД-->
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
