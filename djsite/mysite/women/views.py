@@ -25,8 +25,8 @@ def index(request):  # ссылка на класс HttpRequest
                   context=context)  # именнованому параметру context присваеваем ссылку на словарь context
 
 
-def show_post(request, post_id):
-    post = Women.objects.get(pk=post_id)
+def show_post(request, post_slug):
+    post = Women.objects.get(slug=post_slug)
     cats = Category.objects.all()
     context = {'post': post,
                'cats': cats,
@@ -42,14 +42,14 @@ def about(request):  # ссылка на класс HttpRequest
     return render(request, 'women/about.html', {'menu': menu, 'title': "About site"})
 
 
-def show_category(request, cat_id):
-    posts = Women.objects.filter(cat_id=cat_id)
+def show_category(request, cat_slug):
+    posts = Women.objects.filter(cat__slug=cat_slug)
     cats = Category.objects.all()
     context = {'posts': posts,
                'cats': cats,
                'menu': menu,
                'title': "Head Page",
-               'cat_selected': cat_id}
+               'cat_selected': cat_slug}
     if len(posts) == 0:
         raise Http404()
 

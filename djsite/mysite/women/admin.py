@@ -11,13 +11,14 @@ class WomenAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')  # по каким полям производить поиск
     list_editable = ('is_publisher',)#чтобы поле было редактируемым в админке, не заходя в карточку.(Удобно для Boolean)
     list_filter = ('is_publisher', 'time_create')# Поля по которым можно сортировать в админке
-
+    prepopulated_fields = {'slug': ('title',)}  # автоматическое заполнение слага в Админке
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = (
     'id', 'name')  # Список полей, которые будут отображаться в админ панеле
     list_display_links = ('id', 'name')  # поля на которые можно кликнуть для перехода на статью
     search_fields = ('name',)  # по каким полям производить поиск
+    prepopulated_fields = {'slug' : ('name',)}# автоматическое заполнение слага в Админке
 
 
 admin.site.register(Category, CategoryAdmin)# прописать вторым вспомогательный класс. Обязательно.

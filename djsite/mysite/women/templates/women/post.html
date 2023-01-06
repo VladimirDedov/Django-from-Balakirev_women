@@ -2,13 +2,17 @@
 
 {% block content %}
 <div class="article-panel">
-			<p class="first"><h1>{{post.title}}</h1></p>
-			Дата обновления поста: {{post.time_update|date:"d-m-Y H:i:s"}}
-		</div>
+    <p class="first">
+    <h1>{{post.title}}</h1></p>
+    Дата обновления поста: {{post.time_update|date:"d-m-Y H:i:s"}}
+</div>
 
 <p>
     {% autoescape on %}<!--Экранирование тэгов  -->
-	{{post.content|linebreaks}}
-	{% endautoescape %}
+    {% if post.photo %}
+	<p><img class="img-article-left" src="{{post.photo.url}}"></p>
+	{% endif %}
+{{post.content|linebreaks}}
+{% endautoescape %}
 </p>
 {% endblock %}
