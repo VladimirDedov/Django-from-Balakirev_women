@@ -5,17 +5,14 @@ from django.views.generic import ListView, DetailView, CreateView
 
 from .forms import AddPostForm
 from .models import *
+from .utils import *
 
-menu = [
-    {'title': 'О сайте', 'url_name': 'about'},
-    {'title': 'Добавить статью', 'url_name': 'add_page'},
-    {'title': 'Обратная связь', 'url_name': 'contact'},
-    {'title': 'Войти', 'url_name': 'login'}
-]
+
 
 
 # Класс предаставления главной страницы WomenHome
-class WomenHome(ListView):  # Класс для представления начаьной страницы
+
+class WomenHome(Datamixin, ListView):  # Класс для представления начаьной страницы
     model = Women
     template_name = 'women/index.html'
     context_object_name = 'posts'
@@ -23,10 +20,12 @@ class WomenHome(ListView):  # Класс для представления на�
     def get_context_data(self, *, object_list=None,
                          **kwargs):  # Функция для формирования стат и изменяемых данных для шаблона. Список context
         context = super().get_context_data(**kwargs)  # Получения списка данных из родительского класса ('posts)
-        context['menu'] = menu
-        context['cats'] = Category.objects.all()
-        context['title'] = 'Home'
-        context['cat_selected'] = 0
+        # context['menu'] = menu
+        # context['cats'] = Category.objects.all()
+        # context['title'] = 'Home'
+        # context['cat_selected'] = 0
+        c_def=self.get_user_context(title='Home')#получаем словарь из Миксина
+        context.update(c_def)#Объединение двух словарей для шаблона
         return context
 
     def get_queryset(self):  # Специальный метод для возврата данных из БД выше. model = Women
@@ -46,19 +45,16 @@ class WomenHome(ListView):  # Класс для представления на�
 #                   context=context)  # именнованому параметру context присваеваем ссылку на словарь context
 
 # Класс представления категорий ShowCategory
-class ShowCategory(ListView):
+class ShowCategory(Datamixin, ListView):
     model = Women
     template_name = 'women/index.html'
     context_object_name = 'posts'
     allow_empty = False  # Если ни одного поста не выбрано, то генерируется ошибка
 
-    def get_context_data(self, *, object_list=None,
-                         **kwargs):  # Функция для формирования стат и изменяемых данных для шаблона. Список context
+    def get_context_data(self, *, object_list=None, context=None, **kwargs):  # Функция для формирования стат и изменяемых данных для шаблона. Список context
         context = super().get_context_data(**kwargs)  # Получения списка данных из родительского класса ('posts)
-        context['menu'] = menu
-        context['cats'] = Category.objects.all()
-        context['title'] = 'Категория - ' + str(context['posts'][0].cat)
-        context['cat_selected'] = context['posts'][0].cat_id
+        c_def = self.get_user_context(title='Категория - ' + str(context['posts'][0].cat), cat_selected=context['posts'][0].cat_id)
+        context.update(c_def)
         return context
 
     def get_queryset(self):
@@ -81,7 +77,7 @@ class ShowCategory(ListView):
 #                   context=context)  # именнованому параметру context присваеваем ссылку на словарь context
 
 #Класс представления поста ShowPost
-class ShowPost(DetailView):
+class ShowPost(Datamixin,DetailView):
     model = Women
     template_name = "women/post.html"
     slug_url_kwarg = 'post_slug'# Для переменной слага. Берется из файла url.py
@@ -90,11 +86,8 @@ class ShowPost(DetailView):
     def get_context_data(self, *, object_list=None,
                          **kwargs):  # Функция для формирования стат и изменяемых данных для шаблона. Список context
         context = super().get_context_data(**kwargs)  # Получения списка данных из родительского класса ('posts)
-        context['menu'] = menu
-        context['cats'] = Category.objects.all()
-        context['title'] = context['post']
-        print(context)
-        context['cat_selected'] = context['cats']
+        c_def = self.get_user_context(title=context['post'])
+        context.update(c_def)
         return context
 
 # def show_post(request, post_slug):
@@ -117,16 +110,15 @@ def about(request):  # ссылка на класс HttpRequest
 def categories(request, cat):
     return HttpResponse(f'<h1>Topic for categories</h1><p>{cat}</p>')
 
-class AddPage(CreateView):
+class AddPage(Datamixin, CreateView):
     form_class = AddPostForm
     template_name = 'women/addpage.html'
     success_url = reverse_lazy('home')#перенаправление после добавления поста. Построение "ленивого " маршрута, когда понадобится
     def get_context_data(self, *, object_list=None,
                          **kwargs):  # Функция для формирования стат и изменяемых данных для шаблона. Список context
         context = super().get_context_data(**kwargs)  # Получения списка данных из родительского класса ('posts)
-        context['menu'] = menu
-        context['cats'] = Category.objects.all()
-        context['title'] = 'AddPage'
+        c_def = self.get_user_context(title='Addpage')
+        context.update(c_def)
         return context
 # def addpage(request):
 #     if request.method == 'POST':
