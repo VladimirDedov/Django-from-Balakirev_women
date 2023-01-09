@@ -40,7 +40,7 @@
 	{% endif %}
 
 	{% for c in cats %}
-		{% if c.pk == cat_selected %}
+		{% if c.id == cat_selected %}
 			<li class="selected">{{c.name}}</li>
 		{% else %}
 			<li><a href="{{c.get_absolute_url}}">{{c.name}}</a></li>
@@ -68,11 +68,7 @@
 </td></tr></table>
 </td></tr>
 <!-- Footer -->
-<tr><td valign=top>
-	<div id="footer">
-		<p>&copy; 2021 Частичное или полное копирование информации с данного сайта для распространения на других ресурсах, в том числе и бумажных, строго запрещено.</p>
-	</div>
-</td></tr></table>
+
 <!-- Конец footer'а и страницы -->
 </body>
 </html>
